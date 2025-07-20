@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("job")
@@ -34,18 +35,18 @@ public class JobController {
     }
 
     @GetMapping("{id}")
-    public Mono<JobDto> read(@PathVariable Long id) {
+    public Mono<JobDto> read(@PathVariable UUID id) {
         return this.jobService.read(id);
     }
 
     @PutMapping("{id}")
-    public Mono<JobDto> update(@PathVariable Long id, @RequestBody Mono<JobDto> mono) {
+    public Mono<JobDto> update(@PathVariable UUID id, @RequestBody Mono<JobDto> mono) {
         return this.jobService.update(id, mono);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public Mono<Boolean> delete(@PathVariable Long id) {
+    public Mono<Boolean> delete(@PathVariable UUID id) {
         return this.jobService.delete(id);
     }
 

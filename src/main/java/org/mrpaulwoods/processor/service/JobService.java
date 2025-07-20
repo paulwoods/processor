@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class JobService {
@@ -31,12 +32,12 @@ public class JobService {
                 .map(EntityDtoMapper::toDto);
     }
 
-    public Mono<JobDto> read(Long id) {
+    public Mono<JobDto> read(UUID id) {
         return jobRepository.findById(id)
                 .map(EntityDtoMapper::toDto);
     }
 
-    public Mono<JobDto> update(Long id, Mono<JobDto> mono) {
+    public Mono<JobDto> update(UUID id, Mono<JobDto> mono) {
         return jobRepository.findById(id)
                 .flatMap(entity -> mono)
                 .map(EntityDtoMapper::toEntity)
@@ -45,7 +46,7 @@ public class JobService {
                 .map(EntityDtoMapper::toDto);
     }
 
-    public Mono<Boolean> delete(Long id) {
+    public Mono<Boolean> delete(UUID id) {
         return jobRepository.deleteJobById(id);
     }
 

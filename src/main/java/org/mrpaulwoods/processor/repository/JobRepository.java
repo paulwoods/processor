@@ -7,10 +7,12 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Repository
-public interface JobRepository extends ReactiveCrudRepository<Job, Long> {
+public interface JobRepository extends ReactiveCrudRepository<Job, UUID> {
     Flux<Job> findBy(Pageable pageable);
 
-    Mono<Boolean> deleteJobById(Long id);
+    Mono<Boolean> deleteJobById(UUID id);
 }
 

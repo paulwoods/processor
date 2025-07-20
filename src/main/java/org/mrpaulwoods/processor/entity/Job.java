@@ -4,10 +4,12 @@ import org.mrpaulwoods.processor.JobStatus;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 
+import java.util.UUID;
+
 public class Job {
 
     @Id
-    private Long id;
+    private UUID id;
 
     @Column
     private String url;
@@ -15,11 +17,11 @@ public class Job {
     @Column
     private JobStatus status;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

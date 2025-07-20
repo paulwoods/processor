@@ -2,17 +2,19 @@ package org.mrpaulwoods.processor.dto;
 
 import org.mrpaulwoods.processor.JobStatus;
 
+import java.util.UUID;
+
 public class JobDto {
 
-    private Long id;
+    private UUID id;
     private String url;
     private JobStatus status;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
