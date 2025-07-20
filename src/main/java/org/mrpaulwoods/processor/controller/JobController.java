@@ -37,6 +37,12 @@ public class JobController {
     public Mono<JobDto> read(@PathVariable Long id) {
         return this.jobService.read(id);
     }
+
+    @PutMapping("{id}")
+    public Mono<JobDto> update(@PathVariable Long id, @RequestBody Mono<JobDto> mono) {
+        return this.jobService.update(id, mono);
+    }
+
     @DeleteMapping("{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public Mono<Boolean> delete(@PathVariable Long id) {

@@ -67,6 +67,24 @@ class ProcessorApplicationTests {
         assertEquals(read.getStatus(), created.getStatus());
         assertEquals(read.getUrl(), created.getUrl());
 
+        JobDto dto2 = new JobDto();
+        dto2.setStatus(JobStatus.PENDING);
+        dto2.setUrl("http://www.example.com/runner/2");
+
+        JobDto update = this.client.put()
+                .uri("/job/" + created.getId())
+                .bodyValue(dto2)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(JobDto.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertNotNull(update);
+        assertEquals(update.getId(), created.getId());
+        assertEquals(update.getStatus(), dto2.getStatus());
+        assertEquals(update.getUrl(), dto2.getUrl());
+
         this.client.delete()
                 .uri("/job/" + created.getId())
                 .exchange()

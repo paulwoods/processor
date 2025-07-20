@@ -36,6 +36,15 @@ public class JobService {
                 .map(EntityDtoMapper::toDto);
     }
 
+    public Mono<JobDto> update(Long id, Mono<JobDto> mono) {
+        return jobRepository.findById(id)
+                .flatMap(entity -> mono)
+                .map(EntityDtoMapper::toEntity)
+                .doOnNext(c -> c.setId(id))
+                .flatMap(jobRepository::save)
+                .map(EntityDtoMapper::toDto);
+    }
+
     public Mono<Boolean> delete(Long id) {
         return jobRepository.deleteJobById(id);
     }
