@@ -20,34 +20,33 @@ public class JobService {
     }
 
     public Mono<List<JobDto>> list(Pageable pageable) {
-        return jobRepository.findBy(pageable)
+        return this.jobRepository.findBy(pageable)
                 .map(EntityDtoMapper::toDto)
                 .collectList();
     }
 
     public Mono<JobDto> create(Mono<JobDto> mono) {
-        return mono
-                .map(EntityDtoMapper::toEntity)
-                .flatMap(jobRepository::save)
+        return mono.map(EntityDtoMapper::toEntity)
+                .flatMap(this.jobRepository::save)
                 .map(EntityDtoMapper::toDto);
     }
 
     public Mono<JobDto> read(UUID id) {
-        return jobRepository.findById(id)
+        return this.jobRepository.findById(id)
                 .map(EntityDtoMapper::toDto);
     }
 
     public Mono<JobDto> update(UUID id, Mono<JobDto> mono) {
-        return jobRepository.findById(id)
+        return this.jobRepository.findById(id)
                 .flatMap(entity -> mono)
                 .map(EntityDtoMapper::toEntity)
                 .doOnNext(c -> c.setId(id))
-                .flatMap(jobRepository::save)
+                .flatMap(this.jobRepository::save)
                 .map(EntityDtoMapper::toDto);
     }
 
     public Mono<Boolean> delete(UUID id) {
-        return jobRepository.deleteJobById(id);
+        return this.jobRepository.deleteJobById(id);
     }
 
 }

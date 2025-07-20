@@ -1,7 +1,9 @@
 package org.mrpaulwoods.processor.controller;
 
 import org.mrpaulwoods.processor.dto.JobDto;
+import org.mrpaulwoods.processor.exceptions.ApplicationExceptions;
 import org.mrpaulwoods.processor.service.JobService;
+import org.mrpaulwoods.processor.validator.RequestValidator;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -31,23 +33,30 @@ public class JobController {
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public Mono<JobDto> create(@RequestBody Mono<JobDto> mono) {
-        return this.jobService.create(mono);
+        return mono.transform(RequestValidator.validate())
+                .as(this.jobService::create);
     }
 
     @GetMapping("{id}")
     public Mono<JobDto> read(@PathVariable UUID id) {
-        return this.jobService.read(id);
+        return this.jobService.read(id)
+                .switchIfEmpty(ApplicationExceptions.jobNotFound(id));
     }
 
     @PutMapping("{id}")
     public Mono<JobDto> update(@PathVariable UUID id, @RequestBody Mono<JobDto> mono) {
-        return this.jobService.update(id, mono);
+        return mono.transform(RequestValidator.validate())
+                .as(dto -> this.jobService.update(id, dto))
+                .switchIfEmpty(ApplicationExceptions.jobNotFound(id));
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public Mono<Boolean> delete(@PathVariable UUID id) {
-        return this.jobService.delete(id);
+    public Mono<Void> delete(@PathVariable UUID id) {
+        return this.jobService.delete(id)
+                .filter(b -> b)
+                .switchIfEmpty(ApplicationExceptions.jobNotFound(id))
+                .then();
     }
 
 }

@@ -9,6 +9,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 @AutoConfigureWebTestClient
 class ProcessorApplicationTests {
+
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ProcessorApplicationTests.class);
 
     @Autowired
     private WebTestClient client;
@@ -89,6 +93,74 @@ class ProcessorApplicationTests {
                 .uri("/job/" + created.getId())
                 .exchange()
                 .expectStatus().isNoContent();
+    }
+
+    @Test
+    public void read_invalid_id_returns_not_found() {
+
+        UUID id = UUID.randomUUID();
+
+        this.client.get()
+                .uri("/job/" + id)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .consumeWith(r -> log.info("{}", new String(Objects.requireNonNull(r.getResponseBody()))))
+                .jsonPath("$.title").isEqualTo("Job - Not Found")
+                .jsonPath("$.detail").isEqualTo("Job with id " + id + " not found")
+                .jsonPath("$.instance").isEqualTo("/job/" + id);
+    }
+
+    @Test
+    public void create_invalid_status_returns_bad_request() {
+
+        JobDto dto1 = new JobDto();
+        dto1.setStatus(null);
+        dto1.setUrl("http://www.example.com/runner/1");
+
+        this.client.post()
+                .uri("/job")
+                .bodyValue(dto1)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .jsonPath("$.title").isEqualTo("Job - Invalid Input")
+                .jsonPath("$.detail").isEqualTo("Status is required")
+                .jsonPath("$.instance").isEqualTo("/job");
+    }
+
+    @Test
+    public void create_invalid_url_returns_bad_request() {
+
+        JobDto dto1 = new JobDto();
+        dto1.setStatus(JobStatus.DRAFT);
+        dto1.setUrl(null);
+
+        this.client.post()
+                .uri("/job")
+                .bodyValue(dto1)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .jsonPath("$.title").isEqualTo("Job - Invalid Input")
+                .jsonPath("$.detail").isEqualTo("URL is required")
+                .jsonPath("$.instance").isEqualTo("/job");
+    }
+
+    @Test
+    public void delete_invalid_id_returns_not_found() {
+
+        UUID id = UUID.randomUUID();
+
+        this.client.delete()
+                .uri("/job/" + id)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .consumeWith(r -> log.info("{}", new String(Objects.requireNonNull(r.getResponseBody()))))
+                .jsonPath("$.title").isEqualTo("Job - Not Found")
+                .jsonPath("$.detail").isEqualTo("Job with id " + id + " not found")
+                .jsonPath("$.instance").isEqualTo("/job/" + id);
     }
 
 }
