@@ -31,6 +31,11 @@ public class JobService {
                 .map(EntityDtoMapper::toDto);
     }
 
+    public Mono<JobDto> read(Long id) {
+        return jobRepository.findById(id)
+                .map(EntityDtoMapper::toDto);
+    }
+
     public Mono<Boolean> delete(Long id) {
         return jobRepository.deleteJobById(id);
     }

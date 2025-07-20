@@ -21,7 +21,7 @@ class ProcessorApplicationTests {
     private WebTestClient client;
 
     @Test
-    public void job_create_get_delete() {
+    public void crud() {
 
         JobDto dto = new JobDto();
         dto.setStatus(JobStatus.DRAFT);
@@ -54,8 +54,21 @@ class ProcessorApplicationTests {
         assertEquals(created.getStatus(), jobs.getFirst().getStatus());
         assertEquals(created.getUrl(), jobs.getFirst().getUrl());
 
+        JobDto read = this.client.get()
+                .uri("/job/" + created.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(JobDto.class)
+                .returnResult()
+                .getResponseBody();
+
+        assertNotNull(read);
+        assertEquals(read.getId(), created.getId());
+        assertEquals(read.getStatus(), created.getStatus());
+        assertEquals(read.getUrl(), created.getUrl());
+
         this.client.delete()
-                .uri("/job/" + jobs.getFirst().getId().toString())
+                .uri("/job/" + created.getId())
                 .exchange()
                 .expectStatus().isNoContent();
     }
