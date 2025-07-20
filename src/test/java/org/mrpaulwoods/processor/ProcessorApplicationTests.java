@@ -24,6 +24,7 @@ class ProcessorApplicationTests {
     public void job_create_get_delete() {
 
         JobDto dto = new JobDto();
+        dto.setStatus(JobStatus.DRAFT);
         dto.setUrl("http://www.example.com/runner/1");
 
         JobDto created = this.client.post()
@@ -37,6 +38,7 @@ class ProcessorApplicationTests {
 
         assertNotNull(created);
         assertNotNull(created.getId());
+        assertEquals(dto.getStatus(), created.getStatus());
 
         List<JobDto> jobs = this.client.get()
                 .uri("/job", Map.of("page", 0, "size", 10))
@@ -48,8 +50,9 @@ class ProcessorApplicationTests {
 
         assertNotNull(jobs);
         assertEquals(1, jobs.size());
-        assertNotNull(jobs.getFirst().getId());
-        assertEquals(dto.getUrl(), jobs.getFirst().getUrl());
+        assertEquals(created.getId(), jobs.getFirst().getId());
+        assertEquals(created.getStatus(), jobs.getFirst().getStatus());
+        assertEquals(created.getUrl(), jobs.getFirst().getUrl());
 
         this.client.delete()
                 .uri("/job/" + jobs.getFirst().getId().toString())

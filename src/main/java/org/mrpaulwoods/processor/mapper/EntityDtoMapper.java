@@ -8,6 +8,7 @@ public class EntityDtoMapper {
     public static JobDto toDto(Job entity) {
         JobDto dto = new JobDto();
         dto.setId(entity.getId());
+        dto.setStatus(entity.getStatus());
         dto.setUrl(entity.getUrl());
         return dto;
     }
@@ -15,6 +16,7 @@ public class EntityDtoMapper {
     public static Job toEntity(JobDto dto) {
         Job job = new Job();
         job.setId(dto.getId());
+        job.setStatus(dto.getStatus());
         job.setUrl(dto.getUrl());
         return job;
     }
