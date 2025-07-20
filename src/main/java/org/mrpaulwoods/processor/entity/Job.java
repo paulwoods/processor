@@ -3,8 +3,6 @@ package org.mrpaulwoods.processor.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 
-import java.util.UUID;
-
 public class Job {
 
     @Id

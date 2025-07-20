@@ -1,7 +1,5 @@
 package org.mrpaulwoods.processor.dto;
 
-import java.util.UUID;
-
 public class JobDto {
 
     private Long id;
